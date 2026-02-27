@@ -1,22 +1,23 @@
 import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 class Main {
     public static void main(String[] args) {
         Scanner scn = new Scanner(System.in);
         String word = scn.nextLine();
-
-
+        Queue<Character> queue = new LinkedList<>();
         Stack<Character> stack = new Stack<>();
 
-        // Step 2: Push characters into stack
         for(int i = 0; i < word.length(); i++) {
-            stack.push(word.charAt(i));
+            char ch = word.charAt(i);
+            queue.add(ch);   // Enqueue (FIFO)
+            stack.push(ch);  // Push (LIFO)
         }
 
         boolean isPalindrome = true;
 
-        for(int i = 0; i < word.length(); i++) {
-            if(word.charAt(i) != stack.pop()) {
+        // Step 3: Compare dequeue vs pop
+        while(!queue.isEmpty()) {
+            if(queue.remove() != stack.pop()) {
                 isPalindrome = false;
                 break;
             }

@@ -1,17 +1,37 @@
 import java.util.Scanner;
 
-public class PalindromeCheckerapp {
+// Service class
+class PalindromeChecker {
 
-    public static boolean isPalindrome(String str, int left, int right) {
+    // Public method exposed
+    public boolean checkPalindrome(String input) {
 
-        if (left >= right)
-            return true;
+        // Normalize string
+        String normalized = input.toLowerCase().replaceAll("\\s", "");
 
-        if (str.charAt(left) != str.charAt(right))
-            return false;
+        int n = normalized.length();
 
-        return isPalindrome(str, left + 1, right - 1);
+        // Internal data structure (array acting as stack)
+        char[] stack = new char[n];
+
+        // Push characters into stack
+        for (int i = 0; i < n; i++) {
+            stack[i] = normalized.charAt(i);
+        }
+
+        // Compare original with reverse (pop simulation)
+        for (int i = 0; i < n; i++) {
+            if (normalized.charAt(i) != stack[n - 1 - i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
+}
+
+// Application class
+public class PalindromeCheckerapp {
 
     public static void main(String[] args) {
 
@@ -20,11 +40,10 @@ public class PalindromeCheckerapp {
         System.out.println("Enter a string:");
         String input = sc.nextLine();
 
-        // Step 1: Normalize string
-        String normalized = input.toLowerCase().replaceAll("\\s", "");
+        // Create object of service class
+        PalindromeChecker checker = new PalindromeChecker();
 
-        // Step 2: Apply palindrome logic
-        boolean result = isPalindrome(normalized, 0, normalized.length() - 1);
+        boolean result = checker.checkPalindrome(input);
 
         if (result)
             System.out.println("Palindrome");

@@ -1,27 +1,30 @@
 import java.util.Scanner;
+import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-// Service class
-class PalindromeChecker {
+// Strategy Interface
+interface PalindromeStrategy {
+    boolean check(String input);
+}
 
-    // Public method exposed
-    public boolean checkPalindrome(String input) {
+// Stack-based Strategy
+class StackStrategy implements PalindromeStrategy {
 
-        // Normalize string
+    @Override
+    public boolean check(String input) {
+
         String normalized = input.toLowerCase().replaceAll("\\s", "");
+        Stack<Character> stack = new Stack<>();
 
-        int n = normalized.length();
-
-        // Internal data structure (array acting as stack)
-        char[] stack = new char[n];
-
-        // Push characters into stack
-        for (int i = 0; i < n; i++) {
-            stack[i] = normalized.charAt(i);
+        // Push characters
+        for (int i = 0; i < normalized.length(); i++) {
+            stack.push(normalized.charAt(i));
         }
 
-        // Compare original with reverse (pop simulation)
-        for (int i = 0; i < n; i++) {
-            if (normalized.charAt(i) != stack[n - 1 - i]) {
+        // Compare while popping
+        for (int i = 0; i < normalized.length(); i++) {
+            if (normalized.charAt(i) != stack.pop()) {
                 return false;
             }
         }
@@ -30,7 +33,32 @@ class PalindromeChecker {
     }
 }
 
-// Application class
+// Deque-based Strategy
+class DequeStrategy implements PalindromeStrategy {
+
+    @Override
+    public boolean check(String input) {
+
+        String normalized = input.toLowerCase().replaceAll("\\s", "");
+        Deque<Character> deque = new ArrayDeque<>();
+
+        // Add characters
+        for (char c : normalized.toCharArray()) {
+            deque.addLast(c);
+        }
+
+        // Compare first and last
+        while (deque.size() > 1) {
+            if (deque.removeFirst() != deque.removeLast()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+// Main Application Class
 public class PalindromeCheckerapp {
 
     public static void main(String[] args) {
@@ -40,15 +68,26 @@ public class PalindromeCheckerapp {
         System.out.println("Enter a string:");
         String input = sc.nextLine();
 
-        // Create object of service class
-        PalindromeChecker checker = new PalindromeChecker();
+        System.out.println("\nChoose Algorithm:");
+        System.out.println("1 - Stack Strategy");
+        System.out.println("2 - Deque Strategy");
 
-        boolean result = checker.checkPalindrome(input);
+        int choice = sc.nextInt();
+
+        PalindromeStrategy strategy;
+
+        if (choice == 1) {
+            strategy = new StackStrategy();
+        } else {
+            strategy = new DequeStrategy();
+        }
+
+        boolean result = strategy.check(input);
 
         if (result)
-            System.out.println("Palindrome");
+            System.out.println("\nResult: Palindrome");
         else
-            System.out.println("Not Palindrome");
+            System.out.println("\nResult: Not Palindrome");
 
         sc.close();
     }
